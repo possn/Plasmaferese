@@ -3,625 +3,1572 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Registo de Plasmaférese</title>
+  <meta name="theme-color" content="#0a1224"/>
+  <title>Plasmaférese — Registo V2</title>
+  <link rel="manifest" href="manifest.json">
   <style>
-    :root { --bg:#0b1220; --card:#121a2b; --muted:#9fb0d0; --text:#eaf0ff; --line:#243253; --accent:#5aa7ff; --bad:#ff5a6a; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background: linear-gradient(180deg, #070b14, var(--bg)); color:var(--text); }
-    header { position: sticky; top:0; z-index:10; backdrop-filter: blur(10px); background: rgba(7,11,20,.75); border-bottom:1px solid var(--line); }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 14px 14px 60px; }
-    h1 { font-size: 18px; margin: 10px 0 6px; }
-    .sub { color: var(--muted); font-size: 12px; margin:0 0 10px; }
-    .bar { display:flex; gap:8px; flex-wrap: wrap; padding: 10px 14px; }
-    button {
-      border:1px solid var(--line); background: #0f1730; color: var(--text);
-      padding: 10px 12px; border-radius: 10px; font-weight: 600; cursor:pointer;
+    :root{
+      --bg:#070b14;
+      --panel:#0d152a;
+      --card:#101b34;
+      --line:#25355e;
+      --text:#e9f0ff;
+      --muted:#9fb0d0;
+      --accent:#4ea1ff;
+      --accent2:#7c5cff;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --chip:#0b1328;
     }
-    button.primary { background: linear-gradient(180deg, #2f7dff, #1e5dff); border-color: transparent; }
-    button.danger { background: transparent; border-color: rgba(255,90,106,.6); color: #ffd7db; }
-    button:active { transform: translateY(1px); }
-    .grid { display:grid; grid-template-columns: 1fr; gap:12px; }
-    @media (min-width: 900px){ .grid.two { grid-template-columns: 1fr 1fr; } }
-    .card { background: rgba(18,26,43,.9); border:1px solid var(--line); border-radius: 14px; padding: 12px; }
-    .card h2 { font-size: 14px; margin: 0 0 10px; color: #dbe6ff; }
-    .row { display:grid; grid-template-columns: 1fr; gap:10px; }
-    @media (min-width: 680px){ .row.cols2 { grid-template-columns: 1fr 1fr; } .row.cols3 { grid-template-columns: 1fr 1fr 1fr; } }
-    label { display:block; font-size: 12px; color: var(--muted); margin: 0 0 6px; }
-    input, textarea, select {
-      width:100%; box-sizing:border-box; border-radius: 10px; border:1px solid var(--line);
-      background:#0c142a; color:var(--text); padding:10px 10px; outline:none;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 700px at 15% 0%, rgba(78,161,255,.18), transparent 55%),
+                  radial-gradient(1000px 600px at 85% 10%, rgba(124,92,255,.14), transparent 60%),
+                  linear-gradient(180deg, #050713, var(--bg));
+      color:var(--text);
     }
-    textarea { min-height: 70px; resize: vertical; }
-    .pill { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
-    .chk { display:flex; gap:8px; align-items:center; }
-    .chk input { width:auto; }
-    .muted { color: var(--muted); font-size: 12px; }
-    .session { border:1px dashed rgba(90,167,255,.35); background: rgba(12,20,42,.55); }
-    .session-head { display:flex; justify-content: space-between; align-items:center; gap:10px; }
-    .session-head h3 { font-size: 13px; margin: 0; }
-    .session-actions { display:flex; gap:8px; flex-wrap: wrap; }
-    .tiny { font-size: 12px; padding: 8px 10px; border-radius: 10px; }
-    .hr { height:1px; background: var(--line); margin: 10px 0; }
-    .toast { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); background:#0c142a; border:1px solid var(--line); padding:10px 12px; border-radius:12px; color:var(--text); display:none; }
-    @media print {
-      header, .bar, .toast, .no-print { display:none !important; }
-      body { background:#fff; color:#000; }
-      .card { background:#fff; border:1px solid #bbb; }
-      input, textarea, select { border:1px solid #bbb; background:#fff; color:#000; }
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(5,7,19,.72);
+      border-bottom:1px solid rgba(37,53,94,.8);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:12px 14px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    }
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background: linear-gradient(180deg, rgba(78,161,255,.95), rgba(124,92,255,.95));
+      display:grid; place-items:center;
+      box-shadow: 0 10px 30px rgba(78,161,255,.18);
+    }
+    .logo svg{opacity:.95}
+    h1{font-size:16px; margin:0}
+    .sub{margin:0; color:var(--muted); font-size:12px}
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap}
+    button{
+      appearance:none; border:1px solid rgba(37,53,94,.9);
+      background: rgba(13,21,42,.85);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:650;
+      cursor:pointer;
+      transition:.12s transform ease, .12s opacity ease;
+    }
+    button:active{transform: translateY(1px)}
+    button.primary{
+      border-color: transparent;
+      background: linear-gradient(180deg, rgba(78,161,255,1), rgba(124,92,255,1));
+    }
+    button.ghost{background: transparent}
+    button.danger{border-color: rgba(239,68,68,.65); color:#ffd6d6}
+    button.small{padding:8px 10px; border-radius:11px; font-size:12px}
+    button:disabled{opacity:.5; cursor:not-allowed}
+    .content{max-width:1100px; margin:0 auto; padding:12px 14px 92px}
+    .tabs{
+      position:fixed; bottom:0; left:0; right:0; z-index:60;
+      background: rgba(5,7,19,.78);
+      backdrop-filter: blur(10px);
+      border-top:1px solid rgba(37,53,94,.85);
+    }
+    .tabbar{max-width:1100px; margin:0 auto; padding:10px 10px; display:grid; grid-template-columns: repeat(4, 1fr); gap:8px}
+    .tab{
+      border:1px solid rgba(37,53,94,.85);
+      border-radius:14px;
+      background: rgba(13,21,42,.75);
+      padding:10px 10px;
+      display:flex; gap:8px; align-items:center; justify-content:center;
+      color:var(--muted);
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color: rgba(78,161,255,.85);
+      box-shadow: 0 12px 28px rgba(78,161,255,.12);
+    }
+    .tab svg{width:18px; height:18px}
+    .grid{display:grid; gap:12px}
+    @media (min-width:900px){ .grid.two{grid-template-columns: 1fr 1fr} }
+    .card{
+      background: rgba(16,27,52,.88);
+      border:1px solid rgba(37,53,94,.85);
+      border-radius:18px;
+      padding:12px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:13px;
+      color:#dbe6ff;
+      letter-spacing:.2px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+    }
+    .muted{color:var(--muted); font-size:12px}
+    .row{display:grid; grid-template-columns:1fr; gap:10px}
+    @media (min-width:680px){ .row.c2{grid-template-columns:1fr 1fr} .row.c3{grid-template-columns:1fr 1fr 1fr} }
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
+    input, select, textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(37,53,94,.85);
+      background: rgba(8,13,28,.9);
+      color:var(--text);
+      padding:11px 12px;
+      outline:none;
+    }
+    textarea{min-height:72px; resize:vertical}
+    .pillrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .chip{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px;
+      background: rgba(11,19,40,.9);
+      border:1px solid rgba(37,53,94,.75);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .chip strong{color:var(--text)}
+    .list{
+      display:grid; gap:10px
+    }
+    .patient{
+      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(37,53,94,.7);
+      background: rgba(8,13,28,.55);
+    }
+    .pname{font-weight:800}
+    .meta{color:var(--muted); font-size:12px; margin-top:4px}
+    .actions{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .sep{height:1px; background: rgba(37,53,94,.85); margin:10px 0}
+    .session{
+      border:1px dashed rgba(78,161,255,.45);
+      background: rgba(8,13,28,.45);
+      border-radius:18px;
+      padding:12px;
+    }
+    .sessionhead{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+    .sessionhead h3{margin:0; font-size:13px}
+    .alert{
+      border-radius:16px;
+      padding:10px 12px;
+      border:1px solid rgba(37,53,94,.85);
+      background: rgba(8,13,28,.65);
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .alert.good{border-color: rgba(34,197,94,.55)}
+    .alert.warn{border-color: rgba(245,158,11,.6)}
+    .alert.bad{border-color: rgba(239,68,68,.6)}
+    .alert b{display:block; margin-bottom:2px}
+    .kpi{
+      display:grid; gap:10px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width:680px){ .kpi{grid-template-columns: 1fr 1fr} }
+    .k{border:1px solid rgba(37,53,94,.85); background: rgba(8,13,28,.55); border-radius:18px; padding:12px}
+    .k .t{color:var(--muted); font-size:12px}
+    .k .v{font-size:18px; font-weight:900; margin-top:6px}
+    .k .s{color:var(--muted); font-size:12px; margin-top:6px}
+    .toast{
+      position:fixed; left:50%; bottom:84px; transform:translateX(-50%);
+      background: rgba(8,13,28,.92);
+      border:1px solid rgba(37,53,94,.9);
+      padding:10px 12px;
+      border-radius:14px;
+      color:var(--text);
+      display:none;
+      z-index:80;
+      max-width: 92vw;
+    }
+    .hint{font-size:12px; color:var(--muted); line-height:1.35}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px; padding:2px 6px; border-radius:8px; border:1px solid rgba(37,53,94,.85); background: rgba(8,13,28,.65); color:var(--text)}
+    @media print{
+      header,.tabs,.no-print{display:none!important}
+      body{background:#fff; color:#000}
+      .card,.session,.patient{background:#fff; border:1px solid #bbb}
+      input,textarea,select{border:1px solid #bbb; background:#fff; color:#000}
+      .chip{border:1px solid #bbb; background:#f6f6f6; color:#333}
     }
   </style>
 </head>
 <body>
 <header>
-  <div class="wrap">
-    <h1>Registo de Plasmaférese</h1>
-    <p class="sub">Registo local (no dispositivo) + exportação PDF/Excel. Para doentes reais, pondera pseudonimização.</p>
-  </div>
-  <div class="bar wrap">
-    <button class="primary" onclick="saveAll()">Guardar</button>
-    <button onclick="addSession()">+ Sessão</button>
-    <button onclick="window.print()">Imprimir</button>
-    <button onclick="exportPDF()">Exportar PDF</button>
-    <button onclick="exportExcel()">Exportar Excel</button>
-    <button class="danger" onclick="resetForm()">Limpar</button>
+  <div class="wrap top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 6c2.2-2.4 9.8-2.4 12 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 10c1.2-1.2 6.8-1.2 8 0" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 12v8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M9 17h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Plasmaférese — Registo V2</h1>
+        <p class="sub" id="subtitle">Base local + exportação PDF/Excel • Pediatria: 80 ml/kg • Alerta fibrinogénio &lt; 100 mg/dL</p>
+      </div>
+    </div>
+
+    <div class="toolbar no-print">
+      <button class="primary" onclick="App.saveDB()">Guardar</button>
+      <button onclick="App.exportPDF()">PDF</button>
+      <button onclick="App.exportExcel()">Excel</button>
+      <button class="ghost" onclick="window.print()">Imprimir</button>
+      <button class="danger" onclick="App.resetDB()">Limpar tudo</button>
+    </div>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="grid two">
+<div class="content">
+  <!-- TAB: DOENTES -->
+  <section id="view_patients" class="view">
+    <div class="grid two">
+      <div class="card">
+        <h2>Doentes <span class="muted">armazenados no dispositivo</span></h2>
+        <div class="pillrow" style="margin-bottom:10px;">
+          <span class="chip"><strong id="dbCount">0</strong> doentes</span>
+          <span class="chip">Última gravação: <strong id="dbUpdated">—</strong></span>
+        </div>
+
+        <div class="row c2 no-print">
+          <div>
+            <label>Pesquisa (nome ou NHC)</label>
+            <input id="searchPatients" placeholder="Ex: 123456 ou Silva" oninput="App.renderPatients()" />
+          </div>
+          <div>
+            <label>Ordenar por</label>
+            <select id="sortPatients" onchange="App.renderPatients()">
+              <option value="updatedAt_desc">Mais recentes</option>
+              <option value="name_asc">Nome (A→Z)</option>
+              <option value="nhc_asc">NHC (A→Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <div id="patientsList" class="list"></div>
+        <p class="hint">Sugestão: usa <span class="kbd">NHC</span> como identificador principal (pseudonimização simples).</p>
+      </div>
+
+      <div class="card">
+        <h2>Novo doente</h2>
+        <div class="row c2">
+          <div>
+            <label>Nome</label>
+            <input id="new_name" placeholder="Ex: João Silva" />
+          </div>
+          <div>
+            <label>Nº processo / NHC</label>
+            <input id="new_nhc" placeholder="Ex: 1234567" />
+          </div>
+        </div>
+        <div class="row c3">
+          <div>
+            <label>Data de nascimento</label>
+            <input id="new_dob" type="date" />
+          </div>
+          <div>
+            <label>Sexo</label>
+            <select id="new_sex">
+              <option value="">—</option>
+              <option value="F">F</option>
+              <option value="M">M</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div>
+            <label>Unidade/Serviço</label>
+            <input id="new_unit" placeholder="Ex: UCIP" />
+          </div>
+        </div>
+        <div class="row c2">
+          <div>
+            <label>Peso (kg)</label>
+            <input id="new_weight" type="number" min="0" step="0.01" placeholder="Ex: 18.2" />
+          </div>
+          <div>
+            <label>Altura (cm)</label>
+            <input id="new_height" type="number" min="0" step="0.1" placeholder="Ex: 110" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Notas / Etiqueta</label>
+            <textarea id="new_label" placeholder="Ex: etiqueta, observações, lote, etc."></textarea>
+          </div>
+        </div>
+
+        <div class="pillrow no-print">
+          <button class="primary" onclick="App.createPatient()">Criar doente</button>
+          <button onclick="App.createDemoPatient()">Criar exemplo</button>
+        </div>
+
+        <div class="sep"></div>
+        <div class="alert warn">
+          <div>⚠️</div>
+          <div>
+            <b>Privacidade</b>
+            <div class="hint">Os dados ficam em <b>localStorage</b> (não encriptado). Para uso real: idealmente pseudonimizar e fazer exportação para arquivo seguro.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: EPISÓDIO -->
+  <section id="view_episode" class="view" style="display:none;">
+    <div class="grid two">
+      <div class="card">
+        <h2>Episódio</h2>
+        <div class="alert" id="activePatientBanner" style="margin-bottom:12px;">
+          <div>👤</div>
+          <div>
+            <b id="activePatientName">Sem doente selecionado</b>
+            <div class="hint" id="activePatientMeta">Vai ao separador Doentes e abre um doente.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Indicação</label>
+            <input id="ep_indication" placeholder="Ex: PTT / encefalite auto-imune / etc." />
+          </div>
+        </div>
+        <div class="row c2">
+          <div>
+            <label>Acesso venoso</label>
+            <input id="ep_access" placeholder="Ex: CVC jugular / femoral / ..." />
+          </div>
+          <div>
+            <label>Nº sessões previstas</label>
+            <input id="ep_planned" type="number" min="0" step="1" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Comorbilidades</label>
+            <textarea id="ep_comorb" placeholder="Ex: IRC, cardiopatia, imunossupressão..."></textarea>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="row c2">
+          <div>
+            <label>Vol priming CVC — distal (mL)</label>
+            <input id="ep_prime_dist" type="number" min="0" step="0.1" />
+          </div>
+          <div>
+            <label>Vol priming CVC — proximal (mL)</label>
+            <input id="ep_prime_prox" type="number" min="0" step="0.1" />
+          </div>
+        </div>
+
+        <div class="sep"></div>
+        <div class="row c2">
+          <div>
+            <label>Volume extracorpóreo (mL) — opcional</label>
+            <input id="ep_ecv" type="number" min="0" step="1" placeholder="Se conhecido: circuito + filtros + linhas" />
+          </div>
+          <div>
+            <label>Trigger priming CE (percentagem do volume sanguíneo)</label>
+            <select id="ep_ecv_thresh">
+              <option value="10">10% (padrão)</option>
+              <option value="8">8%</option>
+              <option value="12">12%</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pillrow no-print" style="margin-top:12px;">
+          <button class="primary" onclick="App.saveActivePatient()">Guardar episódio</button>
+          <button onclick="App.goto('sessions')">Ir para sessões →</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Resumo rápido</h2>
+        <div class="kpi" id="episodeKPI">
+          <!-- filled by JS -->
+        </div>
+        <div class="sep"></div>
+        <div id="episodeAlerts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: SESSÕES -->
+  <section id="view_sessions" class="view" style="display:none;">
     <div class="card">
-      <h2>Identificação do doente</h2>
-      <div class="row cols2">
+      <h2>Sessões <span class="muted">adicionar/remover e guardar</span></h2>
+
+      <div class="alert" id="activePatientBanner2" style="margin-bottom:12px;">
+        <div>👤</div>
         <div>
-          <label>Nome</label>
-          <input id="p_name" placeholder="Ex: João Silva" />
-        </div>
-        <div>
-          <label>Nº processo / NHC</label>
-          <input id="p_nhc" placeholder="Ex: 1234567" />
+          <b id="activePatientName2">Sem doente selecionado</b>
+          <div class="hint" id="activePatientMeta2">Vai ao separador Doentes e abre um doente.</div>
         </div>
       </div>
-      <div class="row cols3">
-        <div>
-          <label>Data de nascimento</label>
-          <input id="p_dob" type="date" />
-        </div>
-        <div>
-          <label>Sexo</label>
-          <select id="p_sex">
-            <option value="">—</option>
-            <option>F</option><option>M</option><option>Outro</option>
-          </select>
-        </div>
-        <div>
-          <label>Serviço / Unidade</label>
-          <input id="p_unit" placeholder="Ex: UCIP" />
-        </div>
+
+      <div class="pillrow no-print">
+        <button onclick="App.addSession()">+ Sessão</button>
+        <button onclick="App.duplicateLastSession()">Duplicar última</button>
+        <button class="primary" onclick="App.saveActivePatient()">Guardar</button>
       </div>
-      <div class="row">
-        <div>
-          <label>“Colar etiqueta” (texto livre / código / observações)</label>
-          <textarea id="p_label" placeholder="Ex: etiqueta, lote, nota de identificação, etc."></textarea>
+
+      <div class="sep"></div>
+      <div id="sessionsRoot"></div>
+    </div>
+  </section>
+
+  <!-- TAB: CÁLCULOS -->
+  <section id="view_calc" class="view" style="display:none;">
+    <div class="grid two">
+      <div class="card">
+        <h2>Cálculos clínicos</h2>
+        <div class="alert" id="activePatientBanner3" style="margin-bottom:12px;">
+          <div>👤</div>
+          <div>
+            <b id="activePatientName3">Sem doente selecionado</b>
+            <div class="hint" id="activePatientMeta3">Vai ao separador Doentes e abre um doente.</div>
+          </div>
+        </div>
+
+        <div class="kpi" id="calcKPI"></div>
+
+        <div class="sep"></div>
+        <div id="calcAlerts"></div>
+
+        <div class="sep"></div>
+        <div class="row c2">
+          <div>
+            <label>Target de troca (volumes plasmáticos)</label>
+            <select id="calc_exchange_factor" onchange="App.renderAll()">
+              <option value="1">1.0 × PV</option>
+              <option value="1.2" selected>1.2 × PV</option>
+              <option value="1.5">1.5 × PV</option>
+            </select>
+          </div>
+          <div>
+            <label>Reposição sugerida (Albumina 5% como percentagem da troca)</label>
+            <select id="calc_albumin_factor" onchange="App.renderAll()">
+              <option value="1">100%</option>
+              <option value="0.8">80%</option>
+              <option value="0.6">60%</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="hint">A app calcula PV conforme idade: pediatria (80 ml/kg), adolescentes/criança maior (70 ml/kg), adulto (Nadler). Podes manter estes defaults ou adaptar ao teu protocolo.</p>
+      </div>
+
+      <div class="card">
+        <h2>Exportação do doente activo</h2>
+        <div class="row c2 no-print">
+          <button onclick="App.exportPDF(true)">PDF (só este doente)</button>
+          <button onclick="App.exportExcel(true)">Excel (só este doente)</button>
+        </div>
+        <div class="sep"></div>
+
+        <h2>Backup / Migração</h2>
+        <div class="row c2 no-print">
+          <div>
+            <button onclick="App.exportJSON()">Descarregar JSON (base completa)</button>
+            <div class="hint">Backup de todos os doentes/sessões. Útil para migrar para PC.</div>
+          </div>
+          <div>
+            <input id="importFile" type="file" accept="application/json" />
+            <button onclick="App.importJSON()">Importar JSON</button>
+            <div class="hint">Substitui a base local pelo ficheiro importado.</div>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+        <div class="alert warn">
+          <div>ℹ️</div>
+          <div>
+            <b>Offline (PWA)</b>
+            <div class="hint">Ao alojar em GitHub Pages (HTTPS), a app ativa cache offline automaticamente (service worker). No iPhone: <b>Partilhar → Adicionar ao ecrã principal</b>.</div>
+          </div>
         </div>
       </div>
     </div>
+  </section>
+</div>
 
-    <div class="card">
-      <h2>Dados do episódio</h2>
-      <div class="row">
-        <div>
-          <label>Indicação</label>
-          <input id="e_indication" placeholder="Ex: PTT / encefalite auto-imune / etc." />
-        </div>
-      </div>
-      <div class="row cols2">
-        <div>
-          <label>Nº sessões previstas</label>
-          <input id="e_planned_sessions" type="number" min="0" step="1" />
-        </div>
-        <div>
-          <label>Acesso venoso</label>
-          <input id="e_access" placeholder="Ex: CVC femoral / jugular / ..." />
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>Comorbilidades</label>
-          <textarea id="e_comorb" placeholder="Ex: IRC, cardiopatia, imunossupressão..."></textarea>
-        </div>
-      </div>
-      <div class="row cols2">
-        <div>
-          <label>Vol priming CVC — Distal (mL)</label>
-          <input id="e_prime_distal" type="number" min="0" step="0.1" />
-        </div>
-        <div>
-          <label>Vol priming CVC — Proximal (mL)</label>
-          <input id="e_prime_prox" type="number" min="0" step="0.1" />
-        </div>
-      </div>
-      <p class="muted">Dica: usa “Guardar” frequentemente. O conteúdo fica no dispositivo.</p>
+<div class="tabs no-print">
+  <div class="tabbar">
+    <div class="tab active" id="tab_patients" onclick="App.goto('patients')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+      Doentes
     </div>
-  </div>
-
-  <div class="card">
-    <h2>Sessões</h2>
-    <div id="sessions"></div>
-    <div class="no-print" style="margin-top:10px;">
-      <button onclick="addSession()">+ Adicionar sessão</button>
+    <div class="tab" id="tab_episode" onclick="App.goto('episode')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2Z" stroke="currentColor" stroke-width="2"/></svg>
+      Episódio
     </div>
-  </div>
-
-  <div class="card">
-    <h2>Exportação / arquivo</h2>
-    <div class="row cols2">
-      <div>
-        <label>Guardar como ficheiro (backup JSON)</label>
-        <button onclick="exportJSON()">Descarregar JSON</button>
-        <p class="muted">Backup completo. Podes reimportar noutro dispositivo.</p>
-      </div>
-      <div>
-        <label>Importar backup JSON</label>
-        <input type="file" id="importFile" accept="application/json" />
-        <button onclick="importJSON()">Importar</button>
-        <p class="muted">Substitui o registo actual pelo conteúdo do ficheiro.</p>
-      </div>
+    <div class="tab" id="tab_sessions" onclick="App.goto('sessions')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M8 6h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 12h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+      Sessões
+    </div>
+    <div class="tab" id="tab_calc" onclick="App.goto('calc')">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15l3-3 3 2 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Cálculos
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- jsPDF (PDF) -->
+<!-- jsPDF + SheetJS -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<!-- SheetJS (Excel) -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script>
-  const STORAGE_KEY = "plasmaferese_registo_v1";
+/* ===========================
+   Plasmaférese — Registo V2
+   Single-page app, offline-friendly
+   =========================== */
 
-  function toast(msg){
+const App = (() => {
+  const STORAGE_KEY = "plasmaferese_db_v2";
+  const nowISO = () => new Date().toISOString();
+  const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : (Math.random().toString(16).slice(2) + Date.now().toString(16)));
+
+  const toast = (msg) => {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.style.display = "block";
-    setTimeout(()=> t.style.display="none", 1800);
-  }
+    clearTimeout(toast._to);
+    toast._to = setTimeout(() => t.style.display = "none", 1800);
+  };
 
-  function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+  const clamp = (x, a, b) => Math.min(Math.max(x, a), b);
 
-  function defaultSession(n){
-    return {
-      id: uid(),
-      sessionNo: n || "",
-      date: "",
-      fibrinogen: "",
-      albumin: "",
+  // --- Data model
+  const defaultDB = () => ({
+    version: 2,
+    updatedAt: nowISO(),
+    activePatientId: null,
+    patients: []
+  });
+
+  const defaultPatient = () => ({
+    id: uid(),
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+    patient: {
+      name: "",
+      nhc: "",
+      dob: "",
+      sex: "",
+      unit: "",
       weightKg: "",
       heightCm: "",
-      vstMl: "",
-      htcPct: "",
-      primingCE: "nao",   // "nao" | "sim"
-      ceVolMl: "",
-      replaceAlbumin5: false,
-      replaceAlbumin5Ml: "",
-      replacePFC: false,
-      replacePFCMl: "",
-      interc_access: false,
-      interc_hypotension: false,
-      interc_other: false,
-      interc_other_text: "",
-      endTimeMin: "",
-      reinfusion: "nao",  // "nao" | "sim"
-      other_fibrinogen_conc: false,
-      other_fibrinogen_mgkg: ""
-    };
-  }
+      label: ""
+    },
+    episode: {
+      indication: "",
+      access: "",
+      plannedSessions: "",
+      comorb: "",
+      primeDistalMl: "",
+      primeProxMl: "",
+      ecvMl: "",
+      ecvThreshPct: 10
+    },
+    sessions: []
+  });
 
-  function getFormData(){
-    const data = {
-      patient: {
-        name: document.getElementById("p_name").value.trim(),
-        nhc: document.getElementById("p_nhc").value.trim(),
-        dob: document.getElementById("p_dob").value,
-        sex: document.getElementById("p_sex").value,
-        unit: document.getElementById("p_unit").value.trim(),
-        label: document.getElementById("p_label").value.trim()
-      },
-      episode: {
-        indication: document.getElementById("e_indication").value.trim(),
-        plannedSessions: document.getElementById("e_planned_sessions").value,
-        comorb: document.getElementById("e_comorb").value.trim(),
-        access: document.getElementById("e_access").value.trim(),
-        primeDistal: document.getElementById("e_prime_distal").value,
-        primeProx: document.getElementById("e_prime_prox").value
-      },
-      sessions: collectSessionsFromDOM(),
-      updatedAt: new Date().toISOString()
-    };
-    return data;
-  }
+  const defaultSession = (n) => ({
+    id: uid(),
+    sessionNo: n ? String(n) : "",
+    date: "",
+    fibrinogen: "",      // mg/dL
+    albumin: "",         // mg/dL
+    weightKg: "",        // allow per-session weight override
+    heightCm: "",
+    vstMl: "",
+    htcPct: "",
+    primingCE: "nao",
+    ceVolMl: "",
+    replaceAlbumin5: false,
+    replaceAlbumin5Ml: "",
+    replacePFC: false,
+    replacePFCMl: "",
+    interc_access: false,
+    interc_hypotension: false,
+    interc_other: false,
+    interc_other_text: "",
+    endTimeMin: "",
+    reinfusion: "nao",
+    other_fibrinogen_conc: false,
+    other_fibrinogen_mgkg: ""
+  });
 
-  function setFormData(data){
-    data = data || {};
-    const p = data.patient || {};
-    const e = data.episode || {};
-    document.getElementById("p_name").value = p.name || "";
-    document.getElementById("p_nhc").value = p.nhc || "";
-    document.getElementById("p_dob").value = p.dob || "";
-    document.getElementById("p_sex").value = p.sex || "";
-    document.getElementById("p_unit").value = p.unit || "";
-    document.getElementById("p_label").value = p.label || "";
+  let db = defaultDB();
 
-    document.getElementById("e_indication").value = e.indication || "";
-    document.getElementById("e_planned_sessions").value = e.plannedSessions || "";
-    document.getElementById("e_comorb").value = e.comorb || "";
-    document.getElementById("e_access").value = e.access || "";
-    document.getElementById("e_prime_distal").value = e.primeDistal || "";
-    document.getElementById("e_prime_prox").value = e.primeProx || "";
-
-    renderSessions((data.sessions && data.sessions.length) ? data.sessions : [defaultSession(1)]);
-  }
-
-  function saveAll(){
-    const data = getFormData();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    toast("Guardado no dispositivo.");
-  }
-
-  function loadAll(){
+  // --- Persistence
+  const loadDB = () => {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw){
-      setFormData({ sessions:[defaultSession(1)] });
+    if (!raw) { db = defaultDB(); return; }
+    try {
+      const parsed = JSON.parse(raw);
+      db = parsed && parsed.version === 2 ? parsed : defaultDB();
+      db.patients = (db.patients || []).map(p => ({...defaultPatient(), ...p}));
+    } catch {
+      db = defaultDB();
+    }
+  };
+
+  const saveDB = () => {
+    db.updatedAt = nowISO();
+    // update active patient updatedAt
+    const ap = getActivePatient();
+    if (ap) ap.updatedAt = nowISO();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    renderHeaderStats();
+    toast("Guardado.");
+  };
+
+  const resetDB = () => {
+    if (!confirm("Isto apaga TODOS os doentes nesta instalação. Continuar?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    db = defaultDB();
+    renderAll();
+    toast("Base apagada.");
+  };
+
+  // --- Helpers
+  const getActivePatient = () => db.patients.find(p => p.id === db.activePatientId) || null;
+
+  const computeAgeYears = (dobISO) => {
+    if (!dobISO) return null;
+    const dob = new Date(dobISO);
+    if (isNaN(dob)) return null;
+    const now = new Date();
+    let years = now.getFullYear() - dob.getFullYear();
+    const m = now.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) years--;
+    return years;
+  };
+
+  const fmt = (x, digits=0) => {
+    if (x === null || x === undefined || x === "" || Number.isNaN(x)) return "—";
+    const n = Number(x);
+    if (!isFinite(n)) return "—";
+    return n.toLocaleString("pt-PT", { maximumFractionDigits: digits, minimumFractionDigits: digits });
+  };
+
+  const safeNum = (x) => {
+    const n = Number(String(x).replace(",", "."));
+    return isFinite(n) ? n : null;
+  };
+
+  // --- Clinical calculations
+  // Pediatric defaults confirmed: 80 ml/kg. Threshold fibrinogen 100 mg/dL.
+  // Age rule:
+  //   < 10y => 80 ml/kg
+  //   10-17y => 70 ml/kg
+  //   >=18y => Nadler blood volume estimate (L) then convert to mL
+  const bloodVolumeMl = (patientObj, sessionOverride=null) => {
+    const dob = patientObj.dob;
+    const ageY = computeAgeYears(dob);
+    const sex = patientObj.sex || "";
+    const weight = safeNum(sessionOverride?.weightKg ?? patientObj.weightKg);
+    const heightCm = safeNum(sessionOverride?.heightCm ?? patientObj.heightCm);
+
+    if (!weight || weight <= 0) return { ml: null, method: "Sem peso" };
+
+    if (ageY === null || ageY < 18) {
+      const mlPerKg = (ageY !== null && ageY >= 10) ? 70 : 80;
+      return { ml: weight * mlPerKg, method: `${mlPerKg} ml/kg` };
+    }
+
+    // Adult: Nadler BV in liters
+    if (!heightCm || heightCm <= 0) return { ml: null, method: "Adulto: falta altura" };
+    const h = heightCm / 100.0; // meters
+    let BV_L = null;
+    if (sex === "F") BV_L = 0.3561 * Math.pow(h, 3) + 0.03308 * weight + 0.1833;
+    else BV_L = 0.3669 * Math.pow(h, 3) + 0.03219 * weight + 0.6041; // default male if unknown
+    return { ml: BV_L * 1000.0, method: "Nadler (adulto)" };
+  };
+
+  const plasmaVolumeMl = (BVml, htcPct) => {
+    const htc = safeNum(htcPct);
+    if (!BVml || !htc || htc <= 0 || htc >= 100) return null;
+    const hFrac = htc / 100.0;
+    return BVml * (1 - hFrac);
+  };
+
+  const exchangeTargetMl = (PVml, factor) => {
+    if (!PVml) return null;
+    const f = safeNum(factor);
+    if (!f) return null;
+    return PVml * f;
+  };
+
+  const fibrinogenDoseMg = (weightKg, mgkg) => {
+    const w = safeNum(weightKg);
+    const d = safeNum(mgkg);
+    if (!w || !d) return null;
+    return w * d;
+  };
+
+  // ECV priming trigger: if ECV > threshold% of BV -> recommend RBC priming
+  const ecvPrimingAlert = (ecvMl, BVml, threshPct) => {
+    const ecv = safeNum(ecvMl);
+    if (!ecv || !BVml) return { ratio: null, flag: false };
+    const ratio = (ecv / BVml) * 100;
+    const th = safeNum(threshPct) ?? 10;
+    return { ratio, flag: ratio >= th };
+  };
+
+  // --- UI: navigation
+  const goto = (tab) => {
+    const tabs = ["patients","episode","sessions","calc"];
+    tabs.forEach(t => {
+      document.getElementById("view_"+t).style.display = (t === tab) ? "block" : "none";
+      document.getElementById("tab_"+t).classList.toggle("active", t === tab);
+    });
+    // render on navigation
+    renderAll();
+  };
+
+  // --- UI: patients
+  const createPatient = () => {
+    const p = defaultPatient();
+    p.patient.name = document.getElementById("new_name").value.trim();
+    p.patient.nhc  = document.getElementById("new_nhc").value.trim();
+    p.patient.dob  = document.getElementById("new_dob").value;
+    p.patient.sex  = document.getElementById("new_sex").value;
+    p.patient.unit = document.getElementById("new_unit").value.trim();
+    p.patient.weightKg = document.getElementById("new_weight").value;
+    p.patient.heightCm = document.getElementById("new_height").value;
+    p.patient.label = document.getElementById("new_label").value.trim();
+
+    if (!p.patient.nhc && !p.patient.name) { alert("Preenche pelo menos Nome ou NHC."); return; }
+
+    db.patients.unshift(p);
+    db.activePatientId = p.id;
+    clearNewPatientForm();
+    saveDB();
+    goto("episode");
+  };
+
+  const clearNewPatientForm = () => {
+    ["new_name","new_nhc","new_dob","new_sex","new_unit","new_weight","new_height","new_label"].forEach(id=>{
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.tagName === "SELECT") el.value = "";
+      else el.value = "";
+    });
+  };
+
+  const createDemoPatient = () => {
+    document.getElementById("new_name").value = "Exemplo (teste)";
+    document.getElementById("new_nhc").value = "TESTE-001";
+    document.getElementById("new_dob").value = "2016-03-04";
+    document.getElementById("new_sex").value = "M";
+    document.getElementById("new_unit").value = "UCIP";
+    document.getElementById("new_weight").value = "20";
+    document.getElementById("new_height").value = "115";
+    document.getElementById("new_label").value = "Registo de demonstração.";
+    createPatient();
+    // add a couple sessions
+    addSession(); addSession();
+    const ap = getActivePatient();
+    if (ap) {
+      ap.sessions[0].sessionNo="1"; ap.sessions[0].date="2026-03-01"; ap.sessions[0].htcPct="35"; ap.sessions[0].fibrinogen="90"; ap.sessions[0].replaceAlbumin5=true; ap.sessions[0].replaceAlbumin5Ml="1200";
+      ap.sessions[1].sessionNo="2"; ap.sessions[1].date="2026-03-03"; ap.sessions[1].htcPct="34"; ap.sessions[1].fibrinogen="140"; ap.sessions[1].replaceAlbumin5=true; ap.sessions[1].replaceAlbumin5Ml="1200";
+      saveDB();
+    }
+  };
+
+  const openPatient = (id) => {
+    db.activePatientId = id;
+    saveDB();
+    goto("episode");
+  };
+
+  const deletePatient = (id) => {
+    const p = db.patients.find(x=>x.id===id);
+    const label = p ? (p.patient.nhc || p.patient.name || "doente") : "doente";
+    if (!confirm(`Apagar definitivamente: ${label}?`)) return;
+    db.patients = db.patients.filter(x=>x.id!==id);
+    if (db.activePatientId === id) db.activePatientId = db.patients[0]?.id || null;
+    saveDB();
+    renderAll();
+  };
+
+  const renderPatients = () => {
+    const root = document.getElementById("patientsList");
+    const q = document.getElementById("searchPatients").value.trim().toLowerCase();
+    const sort = document.getElementById("sortPatients").value;
+
+    let arr = [...db.patients];
+    if (q) {
+      arr = arr.filter(p => {
+        const name = (p.patient.name||"").toLowerCase();
+        const nhc  = (p.patient.nhc||"").toLowerCase();
+        return name.includes(q) || nhc.includes(q);
+      });
+    }
+
+    const byName = (a,b)=> (a.patient.name||"").localeCompare(b.patient.name||"");
+    const byNHC  = (a,b)=> (a.patient.nhc||"").localeCompare(b.patient.nhc||"");
+    const byUpdatedDesc = (a,b)=> (b.updatedAt||"").localeCompare(a.updatedAt||"");
+
+    if (sort === "name_asc") arr.sort(byName);
+    else if (sort === "nhc_asc") arr.sort(byNHC);
+    else arr.sort(byUpdatedDesc);
+
+    if (!arr.length){
+      root.innerHTML = `<div class="muted">Sem doentes.</div>`;
       return;
     }
-    try{
-      const data = JSON.parse(raw);
-      setFormData(data);
-    } catch(e){
-      setFormData({ sessions:[defaultSession(1)] });
+
+    root.innerHTML = arr.map(p => {
+      const ageY = computeAgeYears(p.patient.dob);
+      const ageTxt = (ageY===null) ? "idade: —" : `idade: ${ageY} a`;
+      const w = p.patient.weightKg ? `${p.patient.weightKg} kg` : "— kg";
+      const unit = p.patient.unit ? ` • ${p.patient.unit}` : "";
+      const active = (p.id === db.activePatientId);
+      const tag = active ? `<span class="chip"><strong>Activo</strong></span>` : "";
+      const title = (p.patient.name || "Sem nome");
+      const nhc = p.patient.nhc ? `NHC: ${p.patient.nhc}` : "NHC: —";
+      return `
+      <div class="patient">
+        <div>
+          <div class="pname">${escapeHTML(title)}</div>
+          <div class="meta">${escapeHTML(nhc)} • ${ageTxt} • ${escapeHTML(w)}${escapeHTML(unit)}</div>
+          <div class="meta">Sessões: ${p.sessions?.length || 0} • Atualizado: ${fmtDateTime(p.updatedAt)}</div>
+        </div>
+        <div class="actions no-print">
+          ${tag}
+          <button class="small" onclick="App.openPatient('${p.id}')">Abrir</button>
+          <button class="small" onclick="App.exportPDF(true,'${p.id}')">PDF</button>
+          <button class="small danger" onclick="App.deletePatient('${p.id}')">Apagar</button>
+        </div>
+      </div>`;
+    }).join("");
+  };
+
+  // --- UI: episode
+  const loadActiveIntoEpisodeForm = () => {
+    const ap = getActivePatient();
+    // banners
+    const b1 = document.getElementById("activePatientName");
+    const b2 = document.getElementById("activePatientMeta");
+    const b1a = document.getElementById("activePatientName2");
+    const b2a = document.getElementById("activePatientMeta2");
+    const b1b = document.getElementById("activePatientName3");
+    const b2b = document.getElementById("activePatientMeta3");
+
+    if (!ap){
+      [b1,b1a,b1b].forEach(el=>el.textContent="Sem doente selecionado");
+      [b2,b2a,b2b].forEach(el=>el.textContent="Vai ao separador Doentes e abre um doente.");
+      return;
     }
-  }
 
-  function resetForm(){
-    if(!confirm("Limpar tudo neste dispositivo?")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    setFormData({ sessions:[defaultSession(1)] });
-    toast("Limpo.");
-  }
+    const title = ap.patient.name || "Sem nome";
+    const nhc = ap.patient.nhc ? `NHC: ${ap.patient.nhc}` : "NHC: —";
+    const ageY = computeAgeYears(ap.patient.dob);
+    const ageTxt = ageY===null ? "idade: —" : `idade: ${ageY} a`;
+    const w = ap.patient.weightKg ? `${ap.patient.weightKg} kg` : "— kg";
+    const unit = ap.patient.unit ? ap.patient.unit : "—";
+    const meta = `${nhc} • ${ageTxt} • ${w} • ${unit}`;
 
-  function sessionTemplate(s, idx){
+    [b1,b1a,b1b].forEach(el=>el.textContent=title);
+    [b2,b2a,b2b].forEach(el=>el.textContent=meta);
+
+    // fill episode form
+    document.getElementById("ep_indication").value = ap.episode.indication || "";
+    document.getElementById("ep_access").value = ap.episode.access || "";
+    document.getElementById("ep_planned").value = ap.episode.plannedSessions || "";
+    document.getElementById("ep_comorb").value = ap.episode.comorb || "";
+    document.getElementById("ep_prime_dist").value = ap.episode.primeDistalMl || "";
+    document.getElementById("ep_prime_prox").value = ap.episode.primeProxMl || "";
+    document.getElementById("ep_ecv").value = ap.episode.ecvMl || "";
+    document.getElementById("ep_ecv_thresh").value = String(ap.episode.ecvThreshPct ?? 10);
+  };
+
+  const saveActivePatient = () => {
+    const ap = getActivePatient();
+    if (!ap){ alert("Sem doente activo."); return; }
+
+    // episode fields
+    ap.episode.indication = document.getElementById("ep_indication").value.trim();
+    ap.episode.access = document.getElementById("ep_access").value.trim();
+    ap.episode.plannedSessions = document.getElementById("ep_planned").value;
+    ap.episode.comorb = document.getElementById("ep_comorb").value.trim();
+    ap.episode.primeDistalMl = document.getElementById("ep_prime_dist").value;
+    ap.episode.primeProxMl = document.getElementById("ep_prime_prox").value;
+    ap.episode.ecvMl = document.getElementById("ep_ecv").value;
+    ap.episode.ecvThreshPct = Number(document.getElementById("ep_ecv_thresh").value) || 10;
+
+    // sessions are edited live in DOM; sync them
+    syncSessionsFromDOM(ap);
+
+    ap.updatedAt = nowISO();
+    saveDB();
+    renderAll();
+  };
+
+  // --- UI: sessions
+  const addSession = () => {
+    const ap = getActivePatient();
+    if (!ap){ alert("Seleciona um doente."); goto("patients"); return; }
+    const n = (ap.sessions?.length || 0) + 1;
+    ap.sessions = ap.sessions || [];
+    ap.sessions.push(defaultSession(n));
+    saveDB();
+    renderSessions();
+    toast("Sessão adicionada.");
+  };
+
+  const duplicateLastSession = () => {
+    const ap = getActivePatient();
+    if (!ap || !ap.sessions?.length){ addSession(); return; }
+    const last = ap.sessions[ap.sessions.length - 1];
+    const copy = JSON.parse(JSON.stringify(last));
+    copy.id = uid();
+    copy.sessionNo = "";
+    ap.sessions.push(copy);
+    saveDB();
+    renderSessions();
+    toast("Sessão duplicada.");
+  };
+
+  const removeSession = (sid) => {
+    const ap = getActivePatient();
+    if (!ap) return;
+    if (!confirm("Remover esta sessão?")) return;
+    ap.sessions = (ap.sessions||[]).filter(s => s.id !== sid);
+    saveDB();
+    renderSessions();
+  };
+
+  const sessionCardHTML = (s, idx) => {
+    const titleNo = s.sessionNo || String(idx+1);
     return `
-      <div class="card session" data-sid="${s.id}">
-        <div class="session-head">
-          <h3>Sessão</h3>
-          <div class="session-actions no-print">
-            <button class="tiny" onclick="duplicateSession('${s.id}')">Duplicar</button>
-            <button class="tiny danger" onclick="removeSession('${s.id}')">Remover</button>
+      <div class="session" data-sid="${s.id}">
+        <div class="sessionhead">
+          <h3>Sessão ${escapeHTML(titleNo)}</h3>
+          <div class="pillrow no-print">
+            <button class="small" onclick="App.removeSession('${s.id}')">Remover</button>
           </div>
         </div>
 
-        <div class="row cols3">
+        <div class="row c3">
           <div>
             <label>Sessão nº</label>
-            <input data-k="sessionNo" type="text" value="${esc(s.sessionNo)}" placeholder="Ex: 1" />
+            <input data-k="sessionNo" value="${esc(s.sessionNo)}" placeholder="Ex: 1"/>
           </div>
           <div>
             <label>Data</label>
-            <input data-k="date" type="date" value="${esc(s.date)}" />
+            <input data-k="date" type="date" value="${esc(s.date)}"/>
           </div>
           <div>
             <label>Htc (%)</label>
-            <input data-k="htcPct" type="number" step="0.1" min="0" value="${esc(s.htcPct)}" />
+            <input data-k="htcPct" type="number" step="0.1" min="0" max="80" value="${esc(s.htcPct)}" />
           </div>
         </div>
 
-        <div class="row cols3">
+        <div class="row c3">
           <div>
             <label>Fibrinogénio (mg/dL)</label>
-            <input data-k="fibrinogen" type="number" step="0.1" min="0" value="${esc(s.fibrinogen)}" />
+            <input data-k="fibrinogen" type="number" step="1" min="0" value="${esc(s.fibrinogen)}"/>
           </div>
           <div>
             <label>Albumina (mg/dL)</label>
-            <input data-k="albumin" type="number" step="0.1" min="0" value="${esc(s.albumin)}" />
+            <input data-k="albumin" type="number" step="1" min="0" value="${esc(s.albumin)}"/>
           </div>
           <div>
             <label>VST (mL)</label>
-            <input data-k="vstMl" type="number" step="0.1" min="0" value="${esc(s.vstMl)}" />
+            <input data-k="vstMl" type="number" step="1" min="0" value="${esc(s.vstMl)}"/>
           </div>
         </div>
 
-        <div class="row cols2">
+        <div class="row c2">
           <div>
-            <label>Peso (kg)</label>
-            <input data-k="weightKg" type="number" step="0.01" min="0" value="${esc(s.weightKg)}" />
+            <label>Peso (kg) — se diferente do registo base</label>
+            <input data-k="weightKg" type="number" step="0.01" min="0" value="${esc(s.weightKg)}" placeholder="(opcional)"/>
           </div>
           <div>
-            <label>Altura (cm)</label>
-            <input data-k="heightCm" type="number" step="0.1" min="0" value="${esc(s.heightCm)}" />
+            <label>Altura (cm) — se diferente do registo base</label>
+            <input data-k="heightCm" type="number" step="0.1" min="0" value="${esc(s.heightCm)}" placeholder="(opcional)"/>
           </div>
         </div>
 
-        <div class="hr"></div>
+        <div class="sep"></div>
 
-        <div class="row cols2">
+        <div class="row c2">
           <div>
             <label>Priming com CE</label>
-            <div class="pill">
-              <label class="chk"><input type="radio" name="prim_${s.id}" data-k="primingCE" value="nao" ${s.primingCE==="nao"?"checked":""}/> não</label>
-              <label class="chk"><input type="radio" name="prim_${s.id}" data-k="primingCE" value="sim" ${s.primingCE==="sim"?"checked":""}/> sim</label>
+            <div class="pillrow">
+              <label class="chip"><input type="radio" name="prim_${s.id}" data-k="primingCE" value="nao" ${s.primingCE==="nao"?"checked":""}/> não</label>
+              <label class="chip"><input type="radio" name="prim_${s.id}" data-k="primingCE" value="sim" ${s.primingCE==="sim"?"checked":""}/> sim</label>
             </div>
           </div>
           <div>
             <label>Vol CE usado (mL)</label>
-            <input data-k="ceVolMl" type="number" step="0.1" min="0" value="${esc(s.ceVolMl)}" />
+            <input data-k="ceVolMl" type="number" step="1" min="0" value="${esc(s.ceVolMl)}"/>
           </div>
         </div>
 
-        <div class="row cols2">
+        <div class="row c2">
           <div>
             <label>Líquido reposição</label>
-            <div class="pill">
-              <label class="chk"><input type="checkbox" data-k="replaceAlbumin5" ${s.replaceAlbumin5?"checked":""}/> Albumina 5%</label>
-              <input data-k="replaceAlbumin5Ml" type="number" step="0.1" min="0" value="${esc(s.replaceAlbumin5Ml)}" placeholder="mL" style="max-width:160px"/>
-              <label class="chk"><input type="checkbox" data-k="replacePFC" ${s.replacePFC?"checked":""}/> PFC</label>
-              <input data-k="replacePFCMl" type="number" step="0.1" min="0" value="${esc(s.replacePFCMl)}" placeholder="mL" style="max-width:160px"/>
+            <div class="pillrow">
+              <label class="chip"><input type="checkbox" data-k="replaceAlbumin5" ${s.replaceAlbumin5?"checked":""}/> Albumina 5%</label>
+              <input data-k="replaceAlbumin5Ml" type="number" step="1" min="0" value="${esc(s.replaceAlbumin5Ml)}" placeholder="mL" style="max-width:170px"/>
+              <label class="chip"><input type="checkbox" data-k="replacePFC" ${s.replacePFC?"checked":""}/> PFC</label>
+              <input data-k="replacePFCMl" type="number" step="1" min="0" value="${esc(s.replacePFCMl)}" placeholder="mL" style="max-width:170px"/>
             </div>
           </div>
           <div>
             <label>Intercorrências</label>
-            <div class="pill">
-              <label class="chk"><input type="checkbox" data-k="interc_access" ${s.interc_access?"checked":""}/> Acesso</label>
-              <label class="chk"><input type="checkbox" data-k="interc_hypotension" ${s.interc_hypotension?"checked":""}/> Hipotensão</label>
-              <label class="chk"><input type="checkbox" data-k="interc_other" ${s.interc_other?"checked":""}/> Outros</label>
+            <div class="pillrow">
+              <label class="chip"><input type="checkbox" data-k="interc_access" ${s.interc_access?"checked":""}/> Acesso</label>
+              <label class="chip"><input type="checkbox" data-k="interc_hypotension" ${s.interc_hypotension?"checked":""}/> Hipotensão</label>
+              <label class="chip"><input type="checkbox" data-k="interc_other" ${s.interc_other?"checked":""}/> Outros</label>
             </div>
-            <input data-k="interc_other_text" value="${esc(s.interc_other_text)}" placeholder="Se 'Outros', descreve aqui" />
+            <input data-k="interc_other_text" value="${esc(s.interc_other_text)}" placeholder="Se 'Outros', descreve aqui"/>
           </div>
         </div>
 
-        <div class="row cols2">
+        <div class="row c2">
           <div>
             <label>Fim procedimento — tempo (min)</label>
-            <input data-k="endTimeMin" type="number" step="1" min="0" value="${esc(s.endTimeMin)}" />
+            <input data-k="endTimeMin" type="number" step="1" min="0" value="${esc(s.endTimeMin)}"/>
           </div>
           <div>
             <label>Reinfusão</label>
-            <div class="pill">
-              <label class="chk"><input type="radio" name="rein_${s.id}" data-k="reinfusion" value="nao" ${s.reinfusion==="nao"?"checked":""}/> não</label>
-              <label class="chk"><input type="radio" name="rein_${s.id}" data-k="reinfusion" value="sim" ${s.reinfusion==="sim"?"checked":""}/> sim</label>
+            <div class="pillrow">
+              <label class="chip"><input type="radio" name="rein_${s.id}" data-k="reinfusion" value="nao" ${s.reinfusion==="nao"?"checked":""}/> não</label>
+              <label class="chip"><input type="radio" name="rein_${s.id}" data-k="reinfusion" value="sim" ${s.reinfusion==="sim"?"checked":""}/> sim</label>
             </div>
           </div>
         </div>
 
-        <div class="row cols2">
+        <div class="row c2">
           <div>
             <label>Outros</label>
-            <div class="pill">
-              <label class="chk"><input type="checkbox" data-k="other_fibrinogen_conc" ${s.other_fibrinogen_conc?"checked":""}/> Concentrado fibrinogénio</label>
-              <input data-k="other_fibrinogen_mgkg" type="number" step="0.1" min="0" value="${esc(s.other_fibrinogen_mgkg)}" placeholder="mg/kg (opcional)" style="max-width:220px"/>
-              <span class="muted">(referência: 20–30 mg/kg)</span>
+            <div class="pillrow">
+              <label class="chip"><input type="checkbox" data-k="other_fibrinogen_conc" ${s.other_fibrinogen_conc?"checked":""}/> Concentrado fibrinogénio</label>
+              <input data-k="other_fibrinogen_mgkg" type="number" step="0.1" min="0" value="${esc(s.other_fibrinogen_mgkg)}" placeholder="mg/kg (20–30)" style="max-width:220px"/>
             </div>
           </div>
         </div>
       </div>
     `;
-  }
+  };
 
-  function esc(v){
-    return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
-  }
+  const renderSessions = () => {
+    const ap = getActivePatient();
+    const root = document.getElementById("sessionsRoot");
+    if (!ap){
+      root.innerHTML = `<div class="muted">Sem doente activo.</div>`;
+      return;
+    }
+    ap.sessions = ap.sessions || [];
+    if (!ap.sessions.length){
+      root.innerHTML = `<div class="muted">Sem sessões. Carrega em “+ Sessão”.</div>`;
+      return;
+    }
+    root.innerHTML = ap.sessions.map(sessionCardHTML).join("");
+  };
 
-  let sessionsState = [];
-
-  function renderSessions(arr){
-    sessionsState = arr.map(s => ({...defaultSession(), ...s}));
-    const root = document.getElementById("sessions");
-    root.innerHTML = sessionsState.map(sessionTemplate).join("");
-  }
-
-  function addSession(){
-    const nextNo = (sessionsState.length + 1);
-    sessionsState.push(defaultSession(nextNo));
-    renderSessions(sessionsState);
-    toast("Sessão adicionada.");
-  }
-
-  function removeSession(id){
-    if(!confirm("Remover esta sessão?")) return;
-    sessionsState = sessionsState.filter(s => s.id !== id);
-    renderSessions(sessionsState);
-  }
-
-  function duplicateSession(id){
-    const s = sessionsState.find(x => x.id === id);
-    if(!s) return;
-    const copy = {...s, id: uid(), sessionNo: ""};
-    sessionsState.push(copy);
-    renderSessions(sessionsState);
-    toast("Sessão duplicada.");
-  }
-
-  function collectSessionsFromDOM(){
-    const list = [];
-    document.querySelectorAll("#sessions .session").forEach(card => {
+  const syncSessionsFromDOM = (ap) => {
+    if (!ap) return;
+    const cards = document.querySelectorAll("#sessionsRoot .session");
+    const mapById = new Map((ap.sessions||[]).map(s => [s.id, s]));
+    const out = [];
+    cards.forEach(card => {
       const sid = card.getAttribute("data-sid");
-      const base = sessionsState.find(s => s.id === sid) || defaultSession();
+      const base = mapById.get(sid) || defaultSession();
       const s = {...base, id: sid};
-
       card.querySelectorAll("[data-k]").forEach(el => {
         const k = el.getAttribute("data-k");
-        if(el.type === "checkbox") s[k] = el.checked;
-        else if(el.type === "radio") { if(el.checked) s[k] = el.value; }
+        if (el.type === "checkbox") s[k] = el.checked;
+        else if (el.type === "radio") { if (el.checked) s[k] = el.value; }
         else s[k] = el.value;
       });
-
-      list.push(s);
+      out.push(s);
     });
-    return list;
-  }
+    ap.sessions = out;
+  };
 
-  function exportJSON(){
-    const data = getFormData();
-    const filename = makeFileBase(data) + ".json";
-    downloadBlob(JSON.stringify(data, null, 2), filename, "application/json");
-  }
+  // --- Episode KPI + alerts
+  const renderEpisodeSide = () => {
+    const ap = getActivePatient();
+    const kpi = document.getElementById("episodeKPI");
+    const alerts = document.getElementById("episodeAlerts");
+    kpi.innerHTML = "";
+    alerts.innerHTML = "";
 
-  function importJSON(){
+    if (!ap){
+      kpi.innerHTML = `<div class="muted">Sem doente activo.</div>`;
+      return;
+    }
+
+    // ensure we have up-to-date session edits
+    syncSessionsFromDOM(ap);
+
+    const ageY = computeAgeYears(ap.patient.dob);
+    const BV = bloodVolumeMl(ap.patient);
+    // Use latest session Htc if available, else blank
+    const last = (ap.sessions||[]).slice().reverse().find(s => s.htcPct);
+    const htc = last ? last.htcPct : "";
+    const PV = plasmaVolumeMl(BV.ml, htc);
+    const ecv = ap.episode.ecvMl;
+    const ecvTh = ap.episode.ecvThreshPct ?? 10;
+    const ecvA = ecvPrimingAlert(ecv, BV.ml, ecvTh);
+
+    const planned = ap.episode.plannedSessions || "—";
+    const indication = ap.episode.indication || "—";
+    const access = ap.episode.access || "—";
+
+    const items = [
+      { t:"Indicação", v: indication, s:"" },
+      { t:"Acesso", v: access, s:"Sessões previstas: " + planned },
+      { t:"Idade", v: (ageY===null ? "—" : ageY + " anos"), s:"Unidade: " + (ap.patient.unit||"—") },
+      { t:"Volume sanguíneo (BV)", v: BV.ml ? fmt(BV.ml,0)+" mL" : "—", s: "Método: " + BV.method },
+      { t:"Htc usado no cálculo", v: htc ? fmt(htc,1)+" %" : "—", s:"(último Htc inserido)" },
+      { t:"Volume plasmático (PV)", v: PV ? fmt(PV,0)+" mL" : "—", s:"PV = BV × (1 − Htc)" }
+    ];
+
+    kpi.innerHTML = items.map(x => `
+      <div class="k">
+        <div class="t">${escapeHTML(x.t)}</div>
+        <div class="v">${escapeHTML(x.v)}</div>
+        <div class="s">${escapeHTML(x.s)}</div>
+      </div>
+    `).join("");
+
+    // Alerts
+    const a = [];
+    if (ecv && BV.ml){
+      if (ecvA.flag){
+        a.push(alertHTML("warn", "Volume extracorpóreo elevado", `ECV ≈ ${fmt(ecvA.ratio,1)}% do BV (limiar ${fmt(ecvTh,0)}%). Considerar priming com CE e monitorização hemodinâmica.`));
+      } else {
+        a.push(alertHTML("good", "Volume extracorpóreo dentro do esperado", `ECV ≈ ${fmt(ecvA.ratio,1)}% do BV (limiar ${fmt(ecvTh,0)}%).`));
+      }
+    }
+    // fibrinogen low in any session
+    const lowF = (ap.sessions||[]).find(s => safeNum(s.fibrinogen) !== null && safeNum(s.fibrinogen) < 100);
+    if (lowF){
+      a.push(alertHTML("bad", "Fibrinogénio baixo (<100 mg/dL)", `Detectado em sessão ${escapeHTML(lowF.sessionNo || "—")} (${escapeHTML(lowF.date || "sem data")}). Considerar reposição conforme protocolo.`));
+    }
+    alerts.innerHTML = a.join("") || `<div class="muted">Sem alertas.</div>`;
+  };
+
+  const alertHTML = (kind, title, text) => {
+    const icon = kind === "good" ? "✅" : (kind === "warn" ? "⚠️" : "⛔");
+    return `<div class="alert ${kind}" style="margin-bottom:10px;">
+      <div>${icon}</div>
+      <div><b>${escapeHTML(title)}</b><div class="hint">${escapeHTML(text)}</div></div>
+    </div>`;
+  };
+
+  // --- Calc tab
+  const renderCalc = () => {
+    const ap = getActivePatient();
+    const kpi = document.getElementById("calcKPI");
+    const alerts = document.getElementById("calcAlerts");
+    kpi.innerHTML = "";
+    alerts.innerHTML = "";
+
+    if (!ap){
+      kpi.innerHTML = `<div class="muted">Sem doente activo.</div>`;
+      return;
+    }
+    syncSessionsFromDOM(ap);
+
+    const exchangeFactor = safeNum(document.getElementById("calc_exchange_factor").value) || 1.2;
+    const albFactor = safeNum(document.getElementById("calc_albumin_factor").value) || 1;
+
+    // Prefer latest session override weight/height & Htc
+    const last = (ap.sessions||[]).slice().reverse().find(s => s.htcPct || s.weightKg || s.heightCm);
+    const BV = bloodVolumeMl(ap.patient, last);
+    const htc = last?.htcPct || null;
+    const PV = plasmaVolumeMl(BV.ml, htc);
+    const exch = exchangeTargetMl(PV, exchangeFactor);
+    const alb5 = exch ? exch * albFactor : null;
+
+    // fibrinogen dose range based on patient weight (or last override)
+    const w = safeNum(last?.weightKg ?? ap.patient.weightKg);
+    const doseMin = w ? fibrinogenDoseMg(w, 20) : null;
+    const doseMax = w ? fibrinogenDoseMg(w, 30) : null;
+
+    // priming trigger based on ECV
+    const ecv = ap.episode.ecvMl;
+    const th = ap.episode.ecvThreshPct ?? 10;
+    const ecvA = ecvPrimingAlert(ecv, BV.ml, th);
+
+    const items = [
+      { t:"BV", v: BV.ml ? fmt(BV.ml,0)+" mL" : "—", s: BV.method },
+      { t:"PV", v: PV ? fmt(PV,0)+" mL" : "—", s: "PV = BV × (1 − Htc)" },
+      { t:`Troca alvo`, v: exch ? fmt(exch,0)+" mL" : "—", s: `${fmt(exchangeFactor,1)} × PV` },
+      { t:"Albumina 5% sugerida", v: alb5 ? fmt(alb5,0)+" mL" : "—", s: `${fmt(albFactor*100,0)}% da troca alvo` },
+      { t:"Dose conc. fibrinogénio", v: (doseMin && doseMax) ? `${fmt(doseMin,0)}–${fmt(doseMax,0)} mg` : "—", s: "20–30 mg/kg" },
+      { t:"ECV/BV", v: (ecv && BV.ml) ? fmt(ecvA.ratio,1)+" %" : "—", s: `Limiar: ${fmt(th,0)}%` },
+    ];
+
+    kpi.innerHTML = items.map(x => `
+      <div class="k">
+        <div class="t">${escapeHTML(x.t)}</div>
+        <div class="v">${escapeHTML(x.v)}</div>
+        <div class="s">${escapeHTML(x.s)}</div>
+      </div>
+    `).join("");
+
+    const a = [];
+    if (!BV.ml) a.push(alertHTML("warn","Falta peso (ou altura no adulto)","Sem BV/PV fiáveis. Preenche peso (e altura se ≥18 anos)."));
+    if (!htc) a.push(alertHTML("warn","Falta hematócrito","Para calcular PV/troca alvo, insere Htc numa sessão (ou define um valor)."));
+    if (ecv && BV.ml && ecvA.flag) a.push(alertHTML("warn","Priming com CE provavelmente necessário",`ECV ≈ ${fmt(ecvA.ratio,1)}% do BV (≥ ${fmt(th,0)}%).`));
+
+    // fibrinogen low: highlight most recent low
+    const low = (ap.sessions||[]).slice().reverse().find(s => safeNum(s.fibrinogen)!==null && safeNum(s.fibrinogen) < 100);
+    if (low) a.push(alertHTML("bad","Alerta fibrinogénio < 100 mg/dL",`Sessão ${escapeHTML(low.sessionNo||"—")} (${escapeHTML(low.date||"sem data")}): ${escapeHTML(String(low.fibrinogen))} mg/dL.`));
+    alerts.innerHTML = a.join("") || `<div class="muted">Sem alertas.</div>`;
+  };
+
+  // --- Export: JSON
+  const exportJSON = () => {
+    const filename = `plasmaferese_db_${new Date().toISOString().slice(0,10)}.json`;
+    downloadBlob(JSON.stringify(db, null, 2), filename, "application/json");
+  };
+
+  const importJSON = () => {
     const f = document.getElementById("importFile").files[0];
-    if(!f){ alert("Escolhe um ficheiro JSON."); return; }
-    const reader = new FileReader();
-    reader.onload = () => {
+    if (!f) { alert("Escolhe um ficheiro JSON."); return; }
+    const r = new FileReader();
+    r.onload = () => {
       try{
-        const data = JSON.parse(reader.result);
-        setFormData(data);
-        saveAll();
+        const parsed = JSON.parse(r.result);
+        if (!parsed || parsed.version !== 2 || !Array.isArray(parsed.patients)) throw new Error("Formato inválido");
+        db = parsed;
+        // sanity defaults
+        db.patients = db.patients.map(p => ({...defaultPatient(), ...p}));
+        db.activePatientId = db.activePatientId || db.patients[0]?.id || null;
+        saveDB();
+        renderAll();
         toast("Importado.");
-      } catch(e){
-        alert("JSON inválido.");
+      }catch(e){
+        alert("JSON inválido ou de versão diferente.");
       }
     };
-    reader.readAsText(f);
-  }
+    r.readAsText(f);
+  };
 
-  function makeFileBase(data){
-    const nhc = (data?.patient?.nhc || "SEM_NHC").replace(/\s+/g,"_");
-    const name = (data?.patient?.name || "doente").replace(/\s+/g,"_").slice(0,24);
+  // --- Export: Excel
+  // If onlyActive=true, export only active patient. else export full DB (all patients + sessions)
+  const exportExcel = (onlyActive=false, patientId=null) => {
+    syncActiveEdits();
+    const wb = XLSX.utils.book_new();
+
+    const patients = onlyActive ? [getPatientById(patientId) || getActivePatient()].filter(Boolean) : db.patients;
+
+    // Sheet: Patients
+    const pHeader = ["ID","Nome","NHC","DN","Sexo","Unidade","Peso kg","Altura cm","Notas","Criado","Atualizado"];
+    const pRows = patients.map(p => ([
+      p.id,
+      p.patient.name,
+      p.patient.nhc,
+      p.patient.dob,
+      p.patient.sex,
+      p.patient.unit,
+      p.patient.weightKg,
+      p.patient.heightCm,
+      p.patient.label,
+      p.createdAt,
+      p.updatedAt
+    ]));
+    const wsP = XLSX.utils.aoa_to_sheet([pHeader, ...pRows]);
+    XLSX.utils.book_append_sheet(wb, wsP, "Doentes");
+
+    // Sheet: Episodes
+    const eHeader = ["PatientID","Indicação","Acesso","Sessões previstas","Comorbilidades","Priming distal mL","Priming prox mL","ECV mL","ECV limiar %"];
+    const eRows = patients.map(p => ([
+      p.id,
+      p.episode.indication,
+      p.episode.access,
+      p.episode.plannedSessions,
+      p.episode.comorb,
+      p.episode.primeDistalMl,
+      p.episode.primeProxMl,
+      p.episode.ecvMl,
+      p.episode.ecvThreshPct
+    ]));
+    const wsE = XLSX.utils.aoa_to_sheet([eHeader, ...eRows]);
+    XLSX.utils.book_append_sheet(wb, wsE, "Episodios");
+
+    // Sheet: Sessions
+    const sHeader = [
+      "PatientID","Sessão nº","Data","Fibrinogénio mg/dL","Albumina mg/dL","Peso kg","Altura cm","VST mL","Htc %",
+      "Priming CE","Vol CE mL",
+      "Alb5?","Alb5 mL","PFC?","PFC mL",
+      "Interc Acesso","Interc Hipotensão","Interc Outros","Outros (texto)",
+      "Tempo fim (min)","Reinfusão",
+      "Conc fibrinogénio?","Dose mg/kg"
+    ];
+    const sRows = [];
+    patients.forEach(p => {
+      (p.sessions||[]).forEach(s => {
+        sRows.push([
+          p.id, s.sessionNo, s.date, s.fibrinogen, s.albumin, s.weightKg, s.heightCm, s.vstMl, s.htcPct,
+          s.primingCE, s.ceVolMl,
+          s.replaceAlbumin5, s.replaceAlbumin5Ml, s.replacePFC, s.replacePFCMl,
+          s.interc_access, s.interc_hypotension, s.interc_other, s.interc_other_text,
+          s.endTimeMin, s.reinfusion,
+          s.other_fibrinogen_conc, s.other_fibrinogen_mgkg
+        ]);
+      });
+    });
+    const wsS = XLSX.utils.aoa_to_sheet([sHeader, ...sRows]);
+    XLSX.utils.book_append_sheet(wb, wsS, "Sessoes");
+
+    // Sheet: Calculations snapshot
+    const cHeader = ["PatientID","BV mL","BV método","PV mL (último Htc)","Troca alvo mL","Albumina 5% mL","Dose fibrinogénio min mg","Dose fibrinogénio max mg","ECV/BV %"];
+    const exchFactor = safeNum(document.getElementById("calc_exchange_factor").value) || 1.2;
+    const albFactor = safeNum(document.getElementById("calc_albumin_factor").value) || 1;
+
+    const cRows = patients.map(p => {
+      const last = (p.sessions||[]).slice().reverse().find(s => s.htcPct || s.weightKg || s.heightCm);
+      const BV = bloodVolumeMl(p.patient, last);
+      const PV = plasmaVolumeMl(BV.ml, last?.htcPct);
+      const exch = exchangeTargetMl(PV, exchFactor);
+      const alb5 = exch ? exch * albFactor : null;
+      const w = safeNum(last?.weightKg ?? p.patient.weightKg);
+      const doseMin = w ? fibrinogenDoseMg(w, 20) : null;
+      const doseMax = w ? fibrinogenDoseMg(w, 30) : null;
+      const ecvA = ecvPrimingAlert(p.episode.ecvMl, BV.ml, p.episode.ecvThreshPct ?? 10);
+      return [p.id, BV.ml, BV.method, PV, exch, alb5, doseMin, doseMax, ecvA.ratio];
+    });
+    const wsC = XLSX.utils.aoa_to_sheet([cHeader, ...cRows]);
+    XLSX.utils.book_append_sheet(wb, wsC, "Calculos");
+
+    const fn = onlyActive ? makePatientFilename(patients[0], "xlsx") : `plasmaferese_base_${new Date().toISOString().slice(0,10)}.xlsx`;
+    XLSX.writeFile(wb, fn);
+  };
+
+  // --- Export: PDF
+  // If onlyActive=true and patientId provided -> that patient; else active; else whole DB is supported
+  const exportPDF = (onlyActive=false, patientId=null) => {
+    syncActiveEdits();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:"pt", format:"a4" });
+    const margin = 40;
+    let y = 44;
+
+    const line = (txt, size=11, bold=false) => {
+      doc.setFont("helvetica", bold ? "bold" : "normal");
+      doc.setFontSize(size);
+      const split = doc.splitTextToSize(String(txt), 515);
+      doc.text(split, margin, y);
+      y += split.length * (size + 4);
+      if (y > 770){ doc.addPage(); y = 44; }
+    };
+
+    const patients = onlyActive ? [getPatientById(patientId) || getActivePatient()].filter(Boolean) : db.patients;
+
+    line("REGISTO DE PLASMAFÉRESE — V2", 14, true);
+    line("Gerado: " + new Date().toLocaleString("pt-PT"), 10, false);
+    y += 6;
+
+    patients.forEach((p, idx) => {
+      if (idx > 0){ doc.addPage(); y = 44; }
+
+      const ageY = computeAgeYears(p.patient.dob);
+      line("DOENTE", 12, true);
+      line(`Nome: ${p.patient.name || "—"}`, 10);
+      line(`NHC: ${p.patient.nhc || "—"} | DN: ${p.patient.dob || "—"} | Sexo: ${p.patient.sex || "—"} | Idade: ${ageY===null ? "—" : ageY+" a"}`, 10);
+      line(`Peso: ${p.patient.weightKg || "—"} kg | Altura: ${p.patient.heightCm || "—"} cm | Unidade: ${p.patient.unit || "—"}`, 10);
+      if (p.patient.label) line(`Notas: ${p.patient.label}`, 10);
+
+      y += 6;
+      line("EPISÓDIO", 12, true);
+      line(`Indicação: ${p.episode.indication || "—"}`, 10);
+      line(`Acesso: ${p.episode.access || "—"} | Sessões previstas: ${p.episode.plannedSessions || "—"}`, 10);
+      line(`Comorbilidades: ${p.episode.comorb || "—"}`, 10);
+      line(`Priming CVC: distal ${p.episode.primeDistalMl || "—"} mL | proximal ${p.episode.primeProxMl || "—"} mL`, 10);
+      if (p.episode.ecvMl) line(`Volume extracorpóreo (ECV): ${p.episode.ecvMl} mL | Limiar: ${p.episode.ecvThreshPct || 10}%`, 10);
+
+      // Calculations snapshot (use last session for Htc)
+      const last = (p.sessions||[]).slice().reverse().find(s => s.htcPct || s.weightKg || s.heightCm);
+      const BV = bloodVolumeMl(p.patient, last);
+      const PV = plasmaVolumeMl(BV.ml, last?.htcPct);
+      const exchFactor = safeNum(document.getElementById("calc_exchange_factor").value) || 1.2;
+      const albFactor = safeNum(document.getElementById("calc_albumin_factor").value) || 1;
+      const exch = exchangeTargetMl(PV, exchFactor);
+      const alb5 = exch ? exch * albFactor : null;
+      const w = safeNum(last?.weightKg ?? p.patient.weightKg);
+      const doseMin = w ? fibrinogenDoseMg(w, 20) : null;
+      const doseMax = w ? fibrinogenDoseMg(w, 30) : null;
+      const ecvA = ecvPrimingAlert(p.episode.ecvMl, BV.ml, p.episode.ecvThreshPct ?? 10);
+
+      y += 6;
+      line("CÁLCULOS", 12, true);
+      line(`BV: ${BV.ml ? fmt(BV.ml,0)+" mL" : "—"} (${BV.method})`, 10);
+      line(`Htc (último): ${last?.htcPct ? fmt(last.htcPct,1)+" %" : "—"} | PV: ${PV ? fmt(PV,0)+" mL" : "—"}`, 10);
+      line(`Troca alvo: ${exch ? fmt(exch,0)+" mL" : "—"} (${fmt(exchFactor,1)}×PV)`, 10);
+      line(`Albumina 5% sugerida: ${alb5 ? fmt(alb5,0)+" mL" : "—"} (${fmt(albFactor*100,0)}% da troca)`, 10);
+      line(`Conc. fibrinogénio (20–30 mg/kg): ${doseMin && doseMax ? fmt(doseMin,0)+"–"+fmt(doseMax,0)+" mg" : "—"}`, 10);
+      if (p.episode.ecvMl && BV.ml) line(`ECV/BV: ${fmt(ecvA.ratio,1)}% (limiar ${fmt(p.episode.ecvThreshPct||10,0)}%)`, 10);
+
+      y += 8;
+      line("SESSÕES", 12, true);
+
+      (p.sessions||[]).forEach((s, i) => {
+        y += 4;
+        line(`Sessão ${s.sessionNo || (i+1)} | Data: ${s.date || "—"}`, 11, true);
+        line(`Peso: ${s.weightKg || "—"} kg | Altura: ${s.heightCm || "—"} cm | VST: ${s.vstMl || "—"} mL | Htc: ${s.htcPct || "—"} %`, 10);
+        line(`Fibrinogénio: ${s.fibrinogen || "—"} mg/dL | Albumina: ${s.albumin || "—"} mg/dL`, 10);
+        line(`Priming CE: ${s.primingCE || "—"} | Vol CE: ${s.ceVolMl || "—"} mL`, 10);
+        const rep = [];
+        if (s.replaceAlbumin5) rep.push(`Alb 5%: ${s.replaceAlbumin5Ml || "—"} mL`);
+        if (s.replacePFC) rep.push(`PFC: ${s.replacePFCMl || "—"} mL`);
+        line(`Reposição: ${rep.length ? rep.join(" | ") : "—"}`, 10);
+
+        const inter = [];
+        if (s.interc_access) inter.push("Acesso");
+        if (s.interc_hypotension) inter.push("Hipotensão");
+        if (s.interc_other) inter.push("Outros");
+        let interTxt = inter.length ? inter.join(", ") : "—";
+        if (s.interc_other_text) interTxt += ` (${s.interc_other_text})`;
+        line(`Intercorrências: ${interTxt}`, 10);
+
+        line(`Fim: ${s.endTimeMin || "—"} min | Reinfusão: ${s.reinfusion || "—"}`, 10);
+
+        const oth = [];
+        if (s.other_fibrinogen_conc) oth.push(`Conc. fibrinogénio ${s.other_fibrinogen_mgkg ? s.other_fibrinogen_mgkg+" mg/kg" : ""}`.trim());
+        line(`Outros: ${oth.length ? oth.join(" | ") : "—"}`, 10);
+        y += 6;
+      });
+    });
+
+    const fn = onlyActive ? makePatientFilename(patients[0], "pdf") : `plasmaferese_base_${new Date().toISOString().slice(0,10)}.pdf`;
+    doc.save(fn);
+  };
+
+  const makePatientFilename = (p, ext) => {
+    const nhc = (p?.patient?.nhc || "SEM_NHC").replace(/\s+/g,"_").slice(0,24);
+    const name = (p?.patient?.name || "doente").replace(/\s+/g,"_").slice(0,24);
     const dt = new Date().toISOString().slice(0,10);
-    return `plasmaferese_${nhc}_${name}_${dt}`;
-  }
+    return `plasmaferese_${nhc}_${name}_${dt}.${ext}`;
+  };
 
-  function downloadBlob(content, filename, mime){
-    const blob = new Blob([content], {type: mime});
+  const downloadBlob = (content, filename, mime) => {
+    const blob = new Blob([content], {type:mime});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(()=> URL.revokeObjectURL(a.href), 1000);
-  }
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+  };
 
-  async function exportPDF(){
-    const data = getFormData();
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit:"pt", format:"a4" });
+  // --- Utility: HTML escaping
+  const escapeHTML = (s) => String(s ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
-    const margin = 40;
-    let y = 42;
+  const esc = (v) => escapeHTML(v);
 
-    const line = (txt, size=11, bold=false) => {
-      doc.setFont("helvetica", bold ? "bold":"normal");
-      doc.setFontSize(size);
-      const split = doc.splitTextToSize(txt, 515);
-      doc.text(split, margin, y);
-      y += split.length * (size + 4);
-      if(y > 770){ doc.addPage(); y = 42; }
-    };
+  const fmtDateTime = (iso) => {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (isNaN(d)) return "—";
+    return d.toLocaleString("pt-PT");
+  };
 
-    line("REGISTO DE PLASMAFÉRESE", 14, true);
-    line(`Actualizado: ${new Date(data.updatedAt).toLocaleString("pt-PT")}`, 10, false);
-    y += 6;
+  const getPatientById = (id) => db.patients.find(p => p.id === id) || null;
 
-    line("Identificação", 12, true);
-    line(`Nome: ${data.patient.name || "—"} | NHC: ${data.patient.nhc || "—"} | DN: ${data.patient.dob || "—"} | Sexo: ${data.patient.sex || "—"} | Unidade: ${data.patient.unit || "—"}`, 10);
-    if(data.patient.label) line(`Etiqueta/Notas: ${data.patient.label}`, 10);
+  // --- sync active edits (episode + sessions) before exports
+  const syncActiveEdits = () => {
+    const ap = getActivePatient();
+    if (!ap) return;
+    // episode fields may not exist in DOM if not on that tab; guard
+    const el = (id) => document.getElementById(id);
+    if (el("ep_indication")){
+      ap.episode.indication = el("ep_indication").value.trim();
+      ap.episode.access = el("ep_access").value.trim();
+      ap.episode.plannedSessions = el("ep_planned").value;
+      ap.episode.comorb = el("ep_comorb").value.trim();
+      ap.episode.primeDistalMl = el("ep_prime_dist").value;
+      ap.episode.primeProxMl = el("ep_prime_prox").value;
+      ap.episode.ecvMl = el("ep_ecv").value;
+      ap.episode.ecvThreshPct = Number(el("ep_ecv_thresh").value) || 10;
+    }
+    // sessions
+    syncSessionsFromDOM(ap);
+  };
 
-    y += 6;
-    line("Episódio", 12, true);
-    line(`Indicação: ${data.episode.indication || "—"}`, 10);
-    line(`Sessões previstas: ${data.episode.plannedSessions || "—"} | Acesso venoso: ${data.episode.access || "—"}`, 10);
-    line(`Comorbilidades: ${data.episode.comorb || "—"}`, 10);
-    line(`Priming CVC: distal ${data.episode.primeDistal || "—"} mL | proximal ${data.episode.primeProx || "—"} mL`, 10);
+  // --- header stats
+  const renderHeaderStats = () => {
+    document.getElementById("dbCount").textContent = String(db.patients.length);
+    document.getElementById("dbUpdated").textContent = fmtDateTime(db.updatedAt);
+  };
 
-    y += 10;
-    line("Sessões", 12, true);
+  const renderAll = () => {
+    renderHeaderStats();
+    renderPatients();
+    loadActiveIntoEpisodeForm();
+    renderSessions();
+    renderEpisodeSide();
+    renderCalc();
+  };
 
-    (data.sessions || []).forEach((s, i) => {
-      y += 4;
-      line(`Sessão ${s.sessionNo || (i+1)} | Data: ${s.date || "—"}`, 11, true);
-      line(`Peso: ${s.weightKg || "—"} kg | Altura: ${s.heightCm || "—"} cm | VST: ${s.vstMl || "—"} mL | Htc: ${s.htcPct || "—"} %`, 10);
-      line(`Fibrinogénio: ${s.fibrinogen || "—"} mg/dL | Albumina: ${s.albumin || "—"} mg/dL`, 10);
-      line(`Priming com CE: ${s.primingCE || "—"} | Vol CE: ${s.ceVolMl || "—"} mL`, 10);
-
-      const rep = [];
-      if(s.replaceAlbumin5) rep.push(`Albumina 5%: ${s.replaceAlbumin5Ml || "—"} mL`);
-      if(s.replacePFC) rep.push(`PFC: ${s.replacePFCMl || "—"} mL`);
-      line(`Reposição: ${rep.length ? rep.join(" | ") : "—"}`, 10);
-
-      const inter = [];
-      if(s.interc_access) inter.push("Acesso");
-      if(s.interc_hypotension) inter.push("Hipotensão");
-      if(s.interc_other) inter.push("Outros");
-      let interTxt = inter.length ? inter.join(", ") : "—";
-      if(s.interc_other_text) interTxt += ` (${s.interc_other_text})`;
-      line(`Intercorrências: ${interTxt}`, 10);
-
-      line(`Fim: ${s.endTimeMin || "—"} min | Reinfusão: ${s.reinfusion || "—"}`, 10);
-
-      const other = [];
-      if(s.other_fibrinogen_conc) other.push(`Conc. fibrinogénio ${s.other_fibrinogen_mgkg ? (s.other_fibrinogen_mgkg + " mg/kg") : ""}`.trim());
-      line(`Outros: ${other.length ? other.join(" | ") : "—"}`, 10);
-      y += 6;
-    });
-
-    const filename = makeFileBase(data) + ".pdf";
-    doc.save(filename);
-  }
-
-  function exportExcel(){
-    const data = getFormData();
-
-    const wb = XLSX.utils.book_new();
-
-    const patientRows = [
-      ["Nome", data.patient.name],
-      ["NHC", data.patient.nhc],
-      ["Data nascimento", data.patient.dob],
-      ["Sexo", data.patient.sex],
-      ["Unidade", data.patient.unit],
-      ["Etiqueta/Notas", data.patient.label],
-      ["Indicação", data.episode.indication],
-      ["Sessões previstas", data.episode.plannedSessions],
-      ["Comorbilidades", data.episode.comorb],
-      ["Acesso venoso", data.episode.access],
-      ["Priming distal (mL)", data.episode.primeDistal],
-      ["Priming proximal (mL)", data.episode.primeProx],
-      ["Actualizado", data.updatedAt]
-    ];
-    const ws1 = XLSX.utils.aoa_to_sheet([["Campo","Valor"], ...patientRows]);
-    XLSX.utils.book_append_sheet(wb, ws1, "Episodio");
-
-    const header = [
-      "Sessão nº","Data","Fibrinogénio mg/dL","Albumina mg/dL","Peso kg","Altura cm","VST mL","Htc %",
-      "Priming CE","Vol CE mL",
-      "Reposição Alb5?","Alb5 mL","Reposição PFC?","PFC mL",
-      "Intercorr. Acesso","Intercorr. Hipotensão","Intercorr. Outros","Outros (texto)",
-      "Tempo fim (min)","Reinfusão",
-      "Conc. fibrinogénio?","Dose mg/kg"
-    ];
-    const rows = (data.sessions||[]).map(s => ([
-      s.sessionNo, s.date, s.fibrinogen, s.albumin, s.weightKg, s.heightCm, s.vstMl, s.htcPct,
-      s.primingCE, s.ceVolMl,
-      s.replaceAlbumin5, s.replaceAlbumin5Ml, s.replacePFC, s.replacePFCMl,
-      s.interc_access, s.interc_hypotension, s.interc_other, s.interc_other_text,
-      s.endTimeMin, s.reinfusion,
-      s.other_fibrinogen_conc, s.other_fibrinogen_mgkg
-    ]));
-    const ws2 = XLSX.utils.aoa_to_sheet([header, ...rows]);
-    XLSX.utils.book_append_sheet(wb, ws2, "Sessoes");
-
-    const filename = makeFileBase(data) + ".xlsx";
-    XLSX.writeFile(wb, filename);
-  }
-
-  // Auto-guardar quando sais do campo (reduz risco de perder dados)
+  // autosave when leaving fields
   document.addEventListener("focusout", (e) => {
     const tag = e.target?.tagName;
-    if(tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT"){
-      saveAll();
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT"){
+      syncActiveEdits();
+      saveDB();
     }
   });
 
-  // Inicialização
-  loadAll();
+  // public api
+  return {
+    loadDB, saveDB, resetDB,
+    goto,
+    createPatient, createDemoPatient,
+    openPatient, deletePatient,
+    renderPatients,
+    saveActivePatient,
+    addSession, duplicateLastSession, removeSession,
+    exportJSON, importJSON,
+    exportExcel, exportPDF,
+    renderAll
+  };
+})();
+
+// init
+App.loadDB();
+App.renderAll();
+
+// Service worker (offline) — works on HTTPS (e.g., GitHub Pages)
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
